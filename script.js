@@ -3,6 +3,7 @@ const RENDER_SECTION = document.getElementById("render_section")
 const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
 const DIALOG_CAPTION = document.getElementById("dialog_caption")
 const DIALOG_IMG = document.getElementById("dialog_img")
+let current_class = ""
 
 async function load() {
     let pokedata = await fetch(POKE_URL + "pokemon?limit=10&offset=0")
@@ -29,27 +30,20 @@ function getPokedata(pokemon_datajson) {
     return [pokemon_datajson.name, pokemon_datajson.sprites.front_default, pokemon_datajson.id]
 }
 
-function getBackgroundColor(poketype, pokename) {
-    let pokesection = document.getElementById(pokename + '_section')
+function getBackgroundColor(poketype) {
     switch (poketype) {
         case "grass":
-            pokesection.classList.add('grass')
-            break
+            return "grass"
         case "fire":
-            pokesection.classList.add('fire')
-            break
+            return "fire"
         case "water":
-            pokesection.classList.add('water')
-            break
+            return "water"
         case "electric":
-            pokesection.classList.add('electric')
-            break
+            return "electric"
         case "poison":
-            pokesection.classList.add('poison')
-            break
+            return "posion"
         default:
-            pokesection.classList.add('default')
-            break
+            return "default"
     }
 }
 
@@ -70,7 +64,8 @@ function addPokeType(pokename, poketypes) {
         let typeSpan = returnSpan(element)
         POKEMON_ELEMENT.innerHTML += typeSpan
         if (index == 0) {
-            getBackgroundColor(element, pokename)
+            let bg_color = getBackgroundColor(element)
+            document.getElementById(pokename + '_section').classList.add(bg_color)
         }
     }
 }
@@ -78,7 +73,7 @@ function addPokeType(pokename, poketypes) {
 function getAbilities(ability) {
     let poke_abilities = []
     for (let index = 0; index < ability.length; index++) {
-        const element = ability[index];     
+        const element = ability[index];
         poke_abilities.push(element.ability.name)
     }
     return poke_abilities
@@ -94,14 +89,14 @@ async function getDataFromAPI(poke_id) {
     DIALOG_CAPTION.innerText = pokedataJSON.name
     DIALOG_IMG.src = pokedataJSON.sprites.other.dream_world.front_default
     DIALOG_IMG.alt = pokedataJSON.name
-    return [pokedataJSON,poke_abilities]
+    return [pokedataJSON, poke_abilities]
 }
 
-function setAboutSection(poke_dataJSON,abilities) {
+function updateAboutSection(poke_dataJSON, abilities) {
     document.getElementById("species").innerText = poke_dataJSON.species.name
     document.getElementById("height").innerText = poke_dataJSON.height
     document.getElementById("weight").innerText = poke_dataJSON.weight + "kg"
-     document.getElementById("abilities").innerText = ""
+    document.getElementById("abilities").innerText = ""
     for (let index = 0; index < abilities.length; index++) {
         const ability = abilities[index];
         document.getElementById("abilities").innerText += ability
@@ -112,18 +107,41 @@ async function showBigPokemon(poke_id) {
     POKEMON_DIALOG.showModal()
     let poke_data = await getDataFromAPI(poke_id)
     document.getElementById("dialog_main").innerHTML = returnAboutSection()
-    setAboutSection(poke_data[0],poke_data[1])
-
+    updateAboutSection(poke_data[0], poke_data[1])
+    let bg_color = getBackgroundColor(poke_data[0].types[0].type.name)
+    if (current_class !== "") {
+        POKEMON_DIALOG.classList.remove(current_class)
+    }
+    POKEMON_DIALOG.classList.add(bg_color)
+    current_class = bg_color
+    document.getElementById("dialog_nav").innerHTML = returnNav(poke_data[0])
 }
 
-function setStatsSection() {
-
+async function setAboutSection(poke_id) {
+    let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
+    let poke_dataJSON = await poke_data.json()
+    let abilities = getAbilities(poke_dataJSON.abilities)
+    document.getElementById("dialog_main").innerHTML = returnAboutSection()
+    updateAboutSection(poke_dataJSON,abilities)
 }
 
-function setEvolutionSection() {
+async function setStatsSection(poke_id) {
+    document.getElementById("dialog_main").innerHTML = await returnStatsSection(poke_id)
+}
+
+function setEvolutionSection(poke_dataJSON) {
 
 }
 
 function setMovesSection() {
-    
+
 }
+
+function onClick(event) {
+  if (event.target === dialog) {
+    dialog.close();
+  }
+}
+
+const dialog = document.querySelector("dialog");
+dialog.addEventListener("click", onClick);

@@ -34,3 +34,35 @@ function returnAboutSection() {
                 </table>
             </section>`
 }
+
+function returnNav(poke_dataJSON) {    
+    return `<button onclick="setAboutSection(${poke_dataJSON.id})">About</button>
+            <button onclick="setStatsSection(${poke_dataJSON.id})">Stats</button>
+            <button onclick="setEvolutionSection(${poke_dataJSON.id})">Evolution</button>
+            <button onclick="setMovesSection(${poke_dataJSON.id})">Moves</button>`
+}
+
+async function returnStatsSection(poke_id) {
+    let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
+    let poke_dataJSON = await poke_data.json()    
+    return `<section class="stats-section">
+                <section class="label-section"> <label for="hp">Health</label>
+                    <progress id="hp" value="${poke_dataJSON.stats[0].base_stat}" max="100"></progress>
+                </section>
+                <section class="label-section"> <label for="attack">Attack</label>
+                    <progress id="hp" value="${poke_dataJSON.stats[1].base_stat}" max="100"></progress>
+                </section>
+                <section class="label-section"> <label for="defense">Defense</label>
+                    <progress id="hp" value="${poke_dataJSON.stats[2].base_stat}" max="100"></progress>
+                </section>
+                <section class="label-section"> <label for="special-attack">Special attack</label>
+                    <progress id="special-attack" value="${poke_dataJSON.stats[3].base_stat}" max="130"></progress>
+                </section>
+                <section class="label-section"> <label for="special-defense">Special defense</label>
+                    <progress id="special-defense" value="${poke_dataJSON.stats[4].base_stat}" max="130"></progress>
+                </section>
+                <section class="label-section"> <label for="speed">Speed</label>
+                    <progress id="speed" value="${poke_dataJSON.stats[5].base_stat}" max="100"></progress>
+                </section>
+            </section>`
+}

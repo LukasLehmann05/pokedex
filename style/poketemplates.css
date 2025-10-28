@@ -5,7 +5,7 @@
     border-radius: 12px;
     margin: 4px;
     font-family: "Space Grotesk", sans-serif;
-
+    cursor: pointer;
 }
 
 .pokemon-img-small {
@@ -28,4 +28,63 @@
     font-size: 16px;
     padding: 4px;
     font-weight: 500;
+}
+
+.stats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.label-section label {
+    display: flex;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.label-section progress {
+    width: 250px;
+    height: 18px;
+}
+
+.poke-dialog {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    padding: 20px;
+    border-radius: 28px;
+    font-family: "Space Grotesk", sans-serif;
+}
+
+.dialog-img {
+    height: 300px;
+    aspect-ratio: 1;
+    object-fit: contain;
+    padding: 16px;
+}
+
+.dialog-nav button {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+    font-size: 24px;
+}
+
+.dialog-nav button:hover {
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 4px;
+    cursor: pointer;
+}
+
+.td-left {
+    padding-right: 12px;
+    font-weight: bold;
+}
+
+td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 18px;
 }

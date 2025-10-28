@@ -7,4 +7,8 @@ body {
     background-color: rgb(64, 53, 95);
     color: white;
     font-family:  "Raleway", sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
 }
