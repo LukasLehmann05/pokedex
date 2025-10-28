@@ -1,0 +1,51 @@
+.header-img {
+    height: 75px;
+    object-fit: cover;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: rgb(86, 41, 99);
+}
+
+.header-section span {
+    font-family: "Jersey 25", sans-serif;
+    font-size: 52px;
+}
+
+.header-section-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.title-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin: 16px;
+}
+
+.title-section h1 {
+    font-family: "Jersey 25", sans-serif;
+    font-size: 52px;
+}
+
+.title-section button {
+    background-color: rgb(64, 53, 95);
+    font-size: 24px;
+    border: solid;
+    border-color: rgb(144, 55, 168);
+    border-radius: 12px;
+    color: white;
+    font-family: "Bungee", sans-serif;
+    padding: 10px 5px;
+}
+
+.title-section button:hover {
+    background-color: rgb(140, 94, 153);;
+}

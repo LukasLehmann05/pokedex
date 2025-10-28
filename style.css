@@ -1,0 +1,10 @@
+* {
+    margin: 0px;
+    text-decoration: none;
+}
+
+body {
+    background-color: rgb(64, 53, 95);
+    color: white;
+    font-family:  "Raleway", sans-serif;
+}
