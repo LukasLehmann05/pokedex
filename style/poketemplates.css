@@ -1,16 +1,31 @@
 .pokemon-small {
     border: solid;
+    border-color: black;
+    border-width: 3px;
     border-radius: 12px;
     margin: 4px;
+    font-family: "Space Grotesk", sans-serif;
+
 }
 
 .pokemon-img-small {
-    height: 100px;
+    height: 150px;
     object-fit: cover;
 }
 
 .type-section {
     display: flex;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.pokemon-type {
+    border: solid;
+    border-color: rgba(255, 255, 255, 0.199);
+    background-color: rgba(255, 255, 255, 0.199);
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 4px;
+    font-weight: 500;
 }

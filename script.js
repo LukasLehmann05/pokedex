@@ -1,8 +1,11 @@
 const POKE_URL = "https://pokeapi.co/api/v2/"
 const RENDER_SECTION = document.getElementById("render_section")
+const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
+const DIALOG_CAPTION = document.getElementById("dialog_caption")
+const DIALOG_IMG = document.getElementById("dialog_img")
 
 async function load() {
-    let pokedata = await fetch(POKE_URL + "pokemon?limit=100&offset=0")
+    let pokedata = await fetch(POKE_URL + "pokemon?limit=10&offset=0")
     let pokejson = await pokedata.json()
     let pokearray = await pokejson.results
     //console.log(pokejson);
@@ -23,7 +26,7 @@ async function renderPokeSmall(pokearray) {
 }
 
 function getPokedata(pokemon_datajson) {
-    return [pokemon_datajson.name, pokemon_datajson.sprites.front_default]
+    return [pokemon_datajson.name, pokemon_datajson.sprites.front_default, pokemon_datajson.id]
 }
 
 function getBackgroundColor(poketype, pokename) {
@@ -43,6 +46,9 @@ function getBackgroundColor(poketype, pokename) {
             break
         case "poison":
             pokesection.classList.add('poison')
+            break
+        default:
+            pokesection.classList.add('default')
             break
     }
 }
@@ -67,4 +73,57 @@ function addPokeType(pokename, poketypes) {
             getBackgroundColor(element, pokename)
         }
     }
+}
+
+function getAbilities(ability) {
+    let poke_abilities = []
+    for (let index = 0; index < ability.length; index++) {
+        const element = ability[index];     
+        poke_abilities.push(element.ability.name)
+    }
+    return poke_abilities
+}
+
+function getImage(pokemonJSON) {
+
+}
+async function getDataFromAPI(poke_id) {
+    let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
+    let pokedataJSON = await pokedata.json()
+    let poke_abilities = getAbilities(pokedataJSON.abilities)
+    DIALOG_CAPTION.innerText = pokedataJSON.name
+    DIALOG_IMG.src = pokedataJSON.sprites.other.dream_world.front_default
+    DIALOG_IMG.alt = pokedataJSON.name
+    return [pokedataJSON,poke_abilities]
+}
+
+function setAboutSection(poke_dataJSON,abilities) {
+    document.getElementById("species").innerText = poke_dataJSON.species.name
+    document.getElementById("height").innerText = poke_dataJSON.height
+    document.getElementById("weight").innerText = poke_dataJSON.weight + "kg"
+     document.getElementById("abilities").innerText = ""
+    for (let index = 0; index < abilities.length; index++) {
+        const ability = abilities[index];
+        document.getElementById("abilities").innerText += ability
+    }
+}
+
+async function showBigPokemon(poke_id) {
+    POKEMON_DIALOG.showModal()
+    let poke_data = await getDataFromAPI(poke_id)
+    document.getElementById("dialog_main").innerHTML = returnAboutSection()
+    setAboutSection(poke_data[0],poke_data[1])
+
+}
+
+function setStatsSection() {
+
+}
+
+function setEvolutionSection() {
+
+}
+
+function setMovesSection() {
+    
 }

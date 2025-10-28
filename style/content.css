@@ -47,25 +47,82 @@
 }
 
 .title-section button:hover {
-    background-color: rgb(140, 94, 153);;
+    background-color: rgb(140, 94, 153);
+    color: white;
+}
+
+.poke-dialog {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+}
+
+.dialog-img {
+    height: 300px;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.td-left {
+    padding-right: 12px;
+}
+
+td {
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 .grass {
-    background-color: rgb(47, 122, 28);
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(47, 122, 28),
+            rgb(55, 145, 33) 18%,
+            rgb(55, 145, 33) 18%,
+            rgb(47, 122, 28) 18%);
 }
 
 .fire {
-    background-color: rgb(172, 60, 60);
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(172, 60, 60),
+            rgb(201, 70, 70) 18%,
+            rgb(201, 70, 70) 18%,
+            rgb(172, 60, 60) 18%);
 }
 
 .water {
-    background-color: rgb(28, 84, 122);
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(28, 84, 122),
+            rgb(36, 103, 148) 18%,
+            rgb(36, 103, 148) 18%,
+            rgb(28, 84, 122) 18%);
 }
 
 .electric {
-    background-color: rgb(187, 172, 35);
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(252, 188, 0),
+            rgb(248, 212, 10) 18%,
+            rgb(248, 212, 10) 18%,
+            rgb(252, 188, 0) 18%);
 }
 
 .poison {
     background-color: rgb(118, 60, 136);
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(118, 60, 136),
+            rgb(145, 74, 167) 18%,
+            rgb(145, 74, 167) 18%,
+            rgb(118, 60, 136) 18%);
+}
+
+.default {
+    background: repeating-linear-gradient(45deg,
+            rgb(175, 175, 175),
+            rgb(202, 202, 202) 18%,
+            rgb(202, 202, 202) 18%,
+            rgb(175, 175, 175) 18%);
 }
