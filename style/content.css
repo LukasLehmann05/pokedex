@@ -49,3 +49,23 @@
 .title-section button:hover {
     background-color: rgb(140, 94, 153);;
 }
+
+.grass {
+    background-color: rgb(47, 122, 28);
+}
+
+.fire {
+    background-color: rgb(172, 60, 60);
+}
+
+.water {
+    background-color: rgb(28, 84, 122);
+}
+
+.electric {
+    background-color: rgb(187, 172, 35);
+}
+
+.poison {
+    background-color: rgb(118, 60, 136);
+}
