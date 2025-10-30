@@ -3,7 +3,9 @@ const RENDER_SECTION = document.getElementById("render_section")
 const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
 const DIALOG_CAPTION = document.getElementById("dialog_caption")
 const DIALOG_IMG = document.getElementById("dialog_img")
+const DIALOG_TYPES = document.getElementById("dialog_types")
 let current_class = ""
+let current_button = ""
 
 async function load() {
     let pokedata = await fetch(POKE_URL + "pokemon?limit=10&offset=0")
@@ -79,9 +81,6 @@ function getAbilities(ability) {
     return poke_abilities
 }
 
-function getImage(pokemonJSON) {
-
-}
 async function getDataFromAPI(poke_id) {
     let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
     let pokedataJSON = await pokedata.json()
@@ -103,6 +102,14 @@ function updateAboutSection(poke_dataJSON, abilities) {
     }
 }
 
+function setDialogTypes(types) {
+    DIALOG_TYPES.innerHTML = ""
+    for (let index = 0; index < types.length; index++) {
+        const poke_type = types[index];
+        DIALOG_TYPES.innerHTML += returnSpan(poke_type)
+    }
+}
+
 async function showBigPokemon(poke_id) {
     POKEMON_DIALOG.showModal()
     let poke_data = await getDataFromAPI(poke_id)
@@ -113,23 +120,41 @@ async function showBigPokemon(poke_id) {
         POKEMON_DIALOG.classList.remove(current_class)
     }
     POKEMON_DIALOG.classList.add(bg_color)
+    setDialogTypes(getPokeTypes(poke_data[0].types))
     current_class = bg_color
     document.getElementById("dialog_nav").innerHTML = returnNav(poke_data[0])
+    if (current_button != "") {
+        current_button.classList.remove('current')
+    }
+    document.getElementById('about_button').classList.add('current')
+    current_button = document.getElementById('about_button')
 }
 
 async function setAboutSection(poke_id) {
+    current_button.classList.remove('current')
+    document.getElementById('about_button').classList.add('current')
+    current_button = document.getElementById('about_button')
     let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
     let poke_dataJSON = await poke_data.json()
     let abilities = getAbilities(poke_dataJSON.abilities)
     document.getElementById("dialog_main").innerHTML = returnAboutSection()
-    updateAboutSection(poke_dataJSON,abilities)
+    updateAboutSection(poke_dataJSON, abilities)
 }
 
 async function setStatsSection(poke_id) {
+    console.log(current_button);
+
     document.getElementById("dialog_main").innerHTML = await returnStatsSection(poke_id)
+    current_button.classList.remove('current')
+    document.getElementById('stats_button').classList.add('current')
+    current_button = document.getElementById('stats_button')
 }
 
-function setEvolutionSection(poke_dataJSON) {
+function setEvolutionSection(poke_id) {
+    current_button.classList.remove('current')
+    document.getElementById('evo_button').classList.add('current')
+    current_button = document.getElementById('evo_button')
+    returnEvolution(poke_id)
 
 }
 
@@ -137,10 +162,53 @@ function setMovesSection() {
 
 }
 
+function getEvo(chain) {
+    let allEvos = []
+    if (chain.species.name) {
+        allEvos.push(chain.species.name)
+        if (chain.evolves_to[0]) {
+            allEvos.push(chain.evolves_to[0].species.name)
+            if (chain.evolves_to[0].evolves_to[0]) {
+                allEvos.push(chain.evolves_to[0].evolves_to[0].species.name)
+            }
+        }
+    }
+    return allEvos
+}
+
+async function assignEvos(allEvos) {
+    document.getElementById("dialog_main").innerHTML = returnEvoSection()
+    let evo_section = document.getElementById('evo_section')
+    for (let index = 0; index < allEvos.length; index++) {
+        const evo = allEvos[index];
+        let pokedata = await fetch('https://pokeapi.co/api/v2/pokemon/' + evo)
+        let poke_dataJSON = await pokedata.json()
+        let evo_image = poke_dataJSON.sprites.other.dream_world.front_default
+        if (index == 0) {
+            evo_section.innerHTML += returnEvoFirst(evo, evo_image)
+        } else {
+            evo_section.innerHTML += returnEvoOther(evo, evo_image)
+        }
+    }
+}
+
+async function returnEvolution(poke_id) {
+    let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
+    let pokejson = await pokedata.json()
+    let pokespecies = await fetch(pokejson.species.url)
+    let pokespeciesjson = await pokespecies.json()
+    let evo = await fetch(pokespeciesjson.evolution_chain.url)
+    let evojson = await evo.json()
+    let allEvos = getEvo(evojson.chain)
+    assignEvos(allEvos)
+
+}
+
+
 function onClick(event) {
-  if (event.target === dialog) {
-    dialog.close();
-  }
+    if (event.target === dialog) {
+        dialog.close();
+    }
 }
 
 const dialog = document.querySelector("dialog");

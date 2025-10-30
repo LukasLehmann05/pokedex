@@ -35,16 +35,30 @@ function returnAboutSection() {
             </section>`
 }
 
-function returnNav(poke_dataJSON) {    
-    return `<button onclick="setAboutSection(${poke_dataJSON.id})">About</button>
-            <button onclick="setStatsSection(${poke_dataJSON.id})">Stats</button>
-            <button onclick="setEvolutionSection(${poke_dataJSON.id})">Evolution</button>
-            <button onclick="setMovesSection(${poke_dataJSON.id})">Moves</button>`
+function returnNav(poke_dataJSON) {
+    return `<button class="current" id="about_button" onclick="setAboutSection(${poke_dataJSON.id})">About</button>
+            <button id="stats_button" onclick="setStatsSection(${poke_dataJSON.id})">Stats</button>
+            <button id="evo_button" onclick="setEvolutionSection(${poke_dataJSON.id})">Evolution</button>
+            <button id="moves_button" onclick="setMovesSection(${poke_dataJSON.id})">Moves</button>`
 }
+
+function returnEvoFirst(name,image) {
+    return `<img class="evo-img" src="${image}" alt="${name}">`
+}
+
+function returnEvoOther(name,image) {
+    return `<span class="evo-arrow">➤</span>
+            <img class="evo-img" src="${image}" alt="${name}">`
+}
+
+function returnEvoSection() {
+    return '<section class="evo-section" id="evo_section"></section>'
+}
+
 
 async function returnStatsSection(poke_id) {
     let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
-    let poke_dataJSON = await poke_data.json()    
+    let poke_dataJSON = await poke_data.json()
     return `<section class="stats-section">
                 <section class="label-section"> <label for="hp">Health</label>
                     <progress id="hp" value="${poke_dataJSON.stats[0].base_stat}" max="100"></progress>

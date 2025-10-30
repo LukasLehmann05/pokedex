@@ -79,6 +79,12 @@ footer span {
     height: 75px;
 }
 
+.current {
+    text-decoration: underline;
+    text-underline-offset: 8px;
+    text-decoration-thickness: 4px;
+}
+
 .grass {
     color: white;
     background: repeating-linear-gradient(45deg,
@@ -86,6 +92,10 @@ footer span {
             rgb(55, 145, 33) 18%,
             rgb(55, 145, 33) 18%,
             rgb(47, 122, 28) 18%);
+}
+
+.grass button {
+    color: white;
 }
 
 .fire {
@@ -97,6 +107,10 @@ footer span {
             rgb(172, 60, 60) 18%);
 }
 
+.fire button {
+    color: white;
+}
+
 .water {
     color: white;
     background: repeating-linear-gradient(45deg,
@@ -104,6 +118,10 @@ footer span {
             rgb(36, 103, 148) 18%,
             rgb(36, 103, 148) 18%,
             rgb(28, 84, 122) 18%);
+}
+
+.water button {
+    color: white;
 }
 
 .electric {
@@ -115,6 +133,10 @@ footer span {
             rgb(252, 188, 0) 18%);
 }
 
+.electric button {
+    color: white;
+}
+
 .poison {
     background-color: rgb(118, 60, 136);
     color: white;
@@ -123,6 +145,10 @@ footer span {
             rgb(145, 74, 167) 18%,
             rgb(145, 74, 167) 18%,
             rgb(118, 60, 136) 18%);
+}
+
+.poison button {
+    color: white;
 }
 
 .default {
