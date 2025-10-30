@@ -100,6 +100,49 @@
     gap: 4px;
 }
 
+.hide {
+    display: none !important;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid transparent;
+    border-top: 5px solid floralwhite;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.loading-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.loading-section span {
+    font-size: 32px;
+    font-family: "Jersey 25", sans-serif;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+
+    }
+    50% {
+ 
+    }
+    75% {
+        
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .dialog-h2 {
     margin-bottom: 8px;
 }

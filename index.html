@@ -28,16 +28,19 @@
     </header>
     <main class="main-section">
         <section class="title-section">
-            <button>↩ 20</button>
-            <h1>Pokémons</h1>
-            <button>20 ↪</button>
+            <button onclick="loadOnRequest(20)">↪ 20</button>
+            <h1 id="h1_tag">Pokémons</h1>
+            <section class="loading-section hide" id="loading_section">
+                <div class="spinner"></div><span>loading...</span>
+            </section>
+            <button onclick="loadOnRequest(100)">100 ↪</button>
         </section>
         <article id="render_section" class="render-section">
         </article>
     </main>
     <footer>
-            <img class="img-footer" src="./img/pickachu_footer.png" alt="Pikachu">
-            <span>Pokédex</span>
+        <img class="img-footer" src="./img/pickachu_footer.png" alt="Pikachu">
+        <span>Pokédex</span>
     </footer>
 </body>
 

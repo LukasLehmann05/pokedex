@@ -138,7 +138,6 @@ footer span {
 }
 
 .poison {
-    background-color: rgb(118, 60, 136);
     color: white;
     background: repeating-linear-gradient(45deg,
             rgb(118, 60, 136),

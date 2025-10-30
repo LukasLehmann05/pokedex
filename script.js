@@ -4,19 +4,40 @@ const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
 const DIALOG_CAPTION = document.getElementById("dialog_caption")
 const DIALOG_IMG = document.getElementById("dialog_img")
 const DIALOG_TYPES = document.getElementById("dialog_types")
+let start_loading_amount = 20
 let current_class = ""
 let current_button = ""
+let total_loaded = 0
+let loading = false
 
 async function load() {
-    let pokedata = await fetch(POKE_URL + "pokemon?limit=10&offset=0")
+    loading = true
+    let pokedata = await fetch(POKE_URL + `pokemon?limit=${start_loading_amount}&offset=0`)
     let pokejson = await pokedata.json()
     let pokearray = await pokejson.results
-    //console.log(pokejson);
-    renderPokeSmall(pokearray)
+    await renderPokeSmall(pokearray)
+    total_loaded = start_loading_amount
+    loading = false
+    loadingFeedback()
+}
+
+async function loadOnRequest(amount) {
+    if (loading == false) {
+        loading = true
+        loadingFeedback()
+        let pokedata = await fetch(POKE_URL + `pokemon?limit=${amount}&offset=${total_loaded}`)
+        let pokejson = await pokedata.json()
+        let pokearray = await pokejson.results
+        await renderPokeSmall(pokearray)
+        total_loaded += amount
+        loading = false
+        loadingFeedback()
+    }
 
 }
 
 async function renderPokeSmall(pokearray) {
+    loadingFeedback()
     for (let index = 0; index < pokearray.length; index++) {
         const POKEMON = pokearray[index];
         let pokemon_data = await fetch(POKEMON.url)
@@ -43,9 +64,19 @@ function getBackgroundColor(poketype) {
         case "electric":
             return "electric"
         case "poison":
-            return "posion"
+            return "poison"
         default:
             return "default"
+    }
+}
+
+function loadingFeedback() {
+    if (loading == false) {
+        document.getElementById('h1_tag').classList.remove('hide')
+        document.getElementById('loading_section').classList.add('hide')
+    } else {
+        document.getElementById('h1_tag').classList.add('hide')
+        document.getElementById('loading_section').classList.remove('hide')
     }
 }
 
