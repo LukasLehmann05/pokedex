@@ -104,6 +104,12 @@
     display: none !important;
 }
 
+.noResult {
+    margin: 40px 20px;
+    font-size: 40px;
+    font-family: "Jersey 25", sans-serif;
+}
+
 .spinner {
     width: 50px;
     height: 50px;

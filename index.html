@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="./img/pokeball.png">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./style/content.css">
+    <link rel="stylesheet" href="./style/poketypes.css">
     <link rel="stylesheet" href="./style/poketemplates.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,17 +24,19 @@
             <span>Pokédex</span>
         </section>
         <section>
-            <input type="text">
+            <input id="search_bar" type="text" onchange="onSearch()">
         </section>
     </header>
     <main class="main-section">
         <section class="title-section">
+            <button onclick="loadOnRequest(5)">↪ 5</button>
             <button onclick="loadOnRequest(20)">↪ 20</button>
             <h1 id="h1_tag">Pokémons</h1>
             <section class="loading-section hide" id="loading_section">
                 <div class="spinner"></div><span>loading...</span>
             </section>
             <button onclick="loadOnRequest(100)">100 ↪</button>
+            <button onclick="loadOnRequest(200)">200 ↪</button>
         </section>
         <article id="render_section" class="render-section">
         </article>

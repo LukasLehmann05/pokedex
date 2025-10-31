@@ -4,11 +4,15 @@ const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
 const DIALOG_CAPTION = document.getElementById("dialog_caption")
 const DIALOG_IMG = document.getElementById("dialog_img")
 const DIALOG_TYPES = document.getElementById("dialog_types")
+const SEARCH_BAR = document.getElementById("search_bar")
+
 let start_loading_amount = 20
 let current_class = ""
 let current_button = ""
 let total_loaded = 0
 let loading = false
+let search = false
+let renderedPokemons = []
 
 async function load() {
     loading = true
@@ -38,10 +42,12 @@ async function loadOnRequest(amount) {
 
 async function renderPokeSmall(pokearray) {
     loadingFeedback()
+    renderedPokemons = []
     for (let index = 0; index < pokearray.length; index++) {
         const POKEMON = pokearray[index];
         let pokemon_data = await fetch(POKEMON.url)
         let pokemon_datajson = await pokemon_data.json()
+        renderedPokemons.push(pokemon_datajson.name)
         let pokemon_data_array = getPokedata(pokemon_datajson)
         let pokemon_types = getPokeTypes(pokemon_datajson.types)
         RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
@@ -65,6 +71,8 @@ function getBackgroundColor(poketype) {
             return "electric"
         case "poison":
             return "poison"
+        case "dark":
+            return "dark"
         default:
             return "default"
     }
@@ -233,6 +241,56 @@ async function returnEvolution(poke_id) {
     let allEvos = getEvo(evojson.chain)
     assignEvos(allEvos)
 
+}
+
+function renderPokeSearch(pokemons) {
+    loadingFeedback()
+    RENDER_SECTION.innerHTML = ""
+    for (let index = 0; index < pokemons.length; index++) {
+        const POKEMON = pokemons[index];
+        renderedPokemons.push(POKEMON.name)
+        let pokemon_data_array = getPokedata(POKEMON)
+        let pokemon_types = getPokeTypes(POKEMON.types)
+        RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
+        addPokeType(pokemon_data_array[0], pokemon_types)
+    }
+}
+
+
+async function getPokemonFromSearch(pokemons) {
+    let fetched_pokemons = []
+    for (let index = 0; index < pokemons.length; index++) {
+        const POKEMON = pokemons[index];
+        let foundPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${POKEMON}`)
+        let foundPokemonjson = await foundPokemon.json()
+        fetched_pokemons.push(foundPokemonjson)
+    }
+    return fetched_pokemons
+}
+
+async function onSearch() {
+    let input = SEARCH_BAR.value
+    let input_lenght = input.length
+    if (input_lenght >= 3) {
+        search = true
+        let foundPokemons = renderedPokemons.filter(e => e.includes(input))
+        let fetch_pokemons = await getPokemonFromSearch(foundPokemons)
+        if (foundPokemons[0]) {
+            renderPokeSearch(fetch_pokemons)
+        } else {
+            RENDER_SECTION.innerHTML = returnNoResultFount()
+        }
+    } else {
+        if (search == true) {
+            search = false
+            let renderAmount = total_loaded
+            total_loaded = 0
+            RENDER_SECTION.innerHTML = ""
+            loadOnRequest(renderAmount)
+        } else {
+            console.log("ENTER MORE LETTERS");
+        }
+    }
 }
 
 
