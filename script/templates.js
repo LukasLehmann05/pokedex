@@ -84,3 +84,11 @@ async function returnStatsSection(poke_id) {
 function returnNoResultFount() {
     return `<section class="noResult"><h3>We couldn't find what you we're looking for :|</h3></section>`
 }
+
+function returnMoveSection() {
+    return `<section id="move_section" class="move-section"></section>`
+}
+
+function returnMoveTemplate(name,desc) {
+    return `<section><h3>${name}</h3><p>${desc}</p></section>`
+}

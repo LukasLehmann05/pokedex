@@ -181,8 +181,6 @@ async function setAboutSection(poke_id) {
 }
 
 async function setStatsSection(poke_id) {
-    console.log(current_button);
-
     document.getElementById("dialog_main").innerHTML = await returnStatsSection(poke_id)
     current_button.classList.remove('current')
     document.getElementById('stats_button').classList.add('current')
@@ -197,8 +195,29 @@ function setEvolutionSection(poke_id) {
 
 }
 
-function setMovesSection() {
+async function renderMoves(allMoves) {
+    document.getElementById("dialog_main").innerHTML = returnMoveSection()
+    for (let index = 0; index < allMoves.length; index++) {
+        const MOVE = allMoves[index];
+        let fetch_move = await fetch(MOVE.move.url)
+        let fetch_movejson = await fetch_move.json()
+        console.log(fetch_movejson);
 
+        let moveTemplate = returnMoveTemplate(fetch_movejson.names[7].name, fetch_movejson.effect_entries[0].short_effect)
+        document.getElementById("move_section").innerHTML += moveTemplate
+        if (index > 1) {
+            break
+        }
+    }
+}
+
+async function setMovesSection(poke_id) {
+    current_button.classList.remove('current')
+    document.getElementById('moves_button').classList.add('current')
+    current_button = document.getElementById('moves_button')
+    let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
+    let pokedataJSON = await pokedata.json()
+    renderMoves(pokedataJSON.moves)
 }
 
 function getEvo(chain) {
