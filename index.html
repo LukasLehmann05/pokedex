@@ -19,13 +19,16 @@
 
 <body onload="load()">
     <header class="header-section">
-        <section class="header-section-logo">
-            <img class="header-img" src="./img/pikachu.png" alt="Bild von Pikachu">
-            <span>Pokédex</span>
-        </section>
-        <section>
-            <input id="search_bar" type="text" onchange="onSearch()">
-        </section>
+        <div class="header-content-limit">
+            <section class="header-section-logo">
+                <img class="header-img" src="./img/pikachu.png" alt="Bild von Pikachu">
+                <span>Pokédex</span>
+            </section>
+            <section>
+                <input id="search_bar" class="search-bar" type="text" onchange="onSearch()" minlength="3"
+                    placeholder="search...">
+            </section>
+        </div>
     </header>
     <main class="main-section">
         <section class="title-section">
@@ -42,8 +45,10 @@
         </article>
     </main>
     <footer>
-        <img class="img-footer" src="./img/pickachu_footer.png" alt="Pikachu">
-        <span>Pokédex</span>
+        <div class="content-limit-footer">
+            <img class="img-footer" src="./img/pickachu_footer.png" alt="Pikachu">
+            <span>Pokédex</span>
+        </div>
     </footer>
 </body>
 
