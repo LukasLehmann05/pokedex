@@ -1,7 +1,8 @@
 function createTemplateSmall(pokemon, poketype) {
-    return `<button id="${pokemon[0] + '_section'}" class="pokemon-small" onclick="showBigPokemon(${pokemon[2]})" title="${pokemon[0]}">
+    let pokename = pokemon[0].charAt(0).toUpperCase() + pokemon[0].slice(1)
+    return `<button id="${pokemon[0] + '_section'}" class="pokemon-small card" onclick="showBigPokemon(${pokemon[2]})" title="${pokemon[0]}">
                 <section class="pokemon-small-section">
-                    <h2>${pokemon[0]}</h2>
+                    <h2>${pokename}</h2>
                     <img class="pokemon-img-small" src="${pokemon[1]}" alt="${pokemon[0]}">
                     <aside class="type-section" id="${pokemon[0]}"></aside>
                 </section>
@@ -81,7 +82,7 @@ async function returnStatsSection(poke_id) {
             </section>`
 }
 
-function returnNoResultFount() {
+function returnNoResultFound() {
     return `<section class="noResult"><h3>We couldn't find what you we're looking for :|</h3></section>`
 }
 

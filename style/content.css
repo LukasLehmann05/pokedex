@@ -73,6 +73,11 @@
     margin-right: auto;
 }
 
+.render-section :hover {
+    transform: scale(1.025);
+    border-color: white;
+}
+
 .content-limit-footer {
     max-width: 1920px;
     margin-left: auto;

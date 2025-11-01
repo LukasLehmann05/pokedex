@@ -150,7 +150,6 @@ function setDialogTypes(types) {
 }
 
 async function showBigPokemon(poke_id) {
-    POKEMON_DIALOG.showModal()
     let poke_data = await getDataFromAPI(poke_id)
     document.getElementById("dialog_main").innerHTML = returnAboutSection()
     updateAboutSection(poke_data[0], poke_data[1])
@@ -167,6 +166,7 @@ async function showBigPokemon(poke_id) {
     }
     document.getElementById('about_button').classList.add('current')
     current_button = document.getElementById('about_button')
+    POKEMON_DIALOG.showModal()
 }
 
 async function setAboutSection(poke_id) {
@@ -201,8 +201,6 @@ async function renderMoves(allMoves) {
         const MOVE = allMoves[index];
         let fetch_move = await fetch(MOVE.move.url)
         let fetch_movejson = await fetch_move.json()
-        console.log(fetch_movejson);
-
         let moveTemplate = returnMoveTemplate(fetch_movejson.names[7].name, fetch_movejson.effect_entries[0].short_effect)
         document.getElementById("move_section").innerHTML += moveTemplate
         if (index > 1) {
@@ -262,16 +260,19 @@ async function returnEvolution(poke_id) {
 
 }
 
-function renderPokeSearch(pokemons) {
+async function renderPokeSearch(pokemons) {
     loadingFeedback()
     RENDER_SECTION.innerHTML = ""
     for (let index = 0; index < pokemons.length; index++) {
         const POKEMON = pokemons[index];
-        renderedPokemons.push(POKEMON.name)
-        let pokemon_data_array = getPokedata(POKEMON)
-        let pokemon_types = getPokeTypes(POKEMON.types)
-        RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
-        addPokeType(pokemon_data_array[0], pokemon_types)
+        let pokefetch = await fetch(POKEMON.url)
+        let pokefetchJSON = await pokefetch.json()
+        if (pokefetchJSON.id < 9999) {
+            let pokemon_data_array = getPokedata(pokefetchJSON)
+            let pokemon_types = getPokeTypes(pokefetchJSON.types)
+            RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
+            addPokeType(pokemon_data_array[0], pokemon_types)
+        }
     }
 }
 
@@ -287,28 +288,33 @@ async function getPokemonFromSearch(pokemons) {
     return fetched_pokemons
 }
 
+function checkForSearchType() {
+    if (search == true) {
+        search = false
+        let renderAmount = total_loaded
+        total_loaded = 0
+        RENDER_SECTION.innerHTML = ""
+        loadOnRequest(renderAmount)
+    } else {
+        console.log("ENTER MORE LETTERS");
+    }
+}
+
 async function onSearch() {
     let input = SEARCH_BAR.value
     let input_lenght = input.length
     if (input_lenght >= 3) {
         search = true
-        let foundPokemons = renderedPokemons.filter(e => e.includes(input))
-        let fetch_pokemons = await getPokemonFromSearch(foundPokemons)
-        if (foundPokemons[0]) {
-            renderPokeSearch(fetch_pokemons)
+        let allPokemons = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
+        let allPokemonsjson = await allPokemons.json()
+        let foundpokemons = await allPokemonsjson.results.filter(pokemon => pokemon.name.includes(input))
+        if (foundpokemons) {
+            renderPokeSearch(foundpokemons)
         } else {
-            RENDER_SECTION.innerHTML = returnNoResultFount()
+            RENDER_SECTION.innerHTML = returnNoResultFound()
         }
     } else {
-        if (search == true) {
-            search = false
-            let renderAmount = total_loaded
-            total_loaded = 0
-            RENDER_SECTION.innerHTML = ""
-            loadOnRequest(renderAmount)
-        } else {
-            console.log("ENTER MORE LETTERS");
-        }
+        checkForSearchType()
     }
 }
 
