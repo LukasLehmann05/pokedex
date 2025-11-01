@@ -60,21 +60,11 @@ function getPokedata(pokemon_datajson) {
 }
 
 function getBackgroundColor(poketype) {
-    switch (poketype) {
-        case "grass":
-            return "grass"
-        case "fire":
-            return "fire"
-        case "water":
-            return "water"
-        case "electric":
-            return "electric"
-        case "poison":
-            return "poison"
-        case "dark":
-            return "dark"
-        default:
-            return "default"
+    const TYPE_CLASSES = ["grass","fire","water","electric","poison","dark","bug","fighting","psychic","rock"]
+    if (TYPE_CLASSES.includes(poketype)) {
+        return poketype
+    } else {
+        return "default"
     }
 }
 
@@ -82,9 +72,11 @@ function loadingFeedback() {
     if (loading == false) {
         document.getElementById('h1_tag').classList.remove('hide')
         document.getElementById('loading_section').classList.add('hide')
+        document.getElementById('title_center').classList.add('column-reverse')
     } else {
         document.getElementById('h1_tag').classList.add('hide')
         document.getElementById('loading_section').classList.remove('hide')
+        document.getElementById('title_center').classList.remove('column-reverse')
     }
 }
 
@@ -124,9 +116,10 @@ async function getDataFromAPI(poke_id) {
     let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
     let pokedataJSON = await pokedata.json()
     let poke_abilities = getAbilities(pokedataJSON.abilities)
-    DIALOG_CAPTION.innerText = pokedataJSON.name
+    DIALOG_CAPTION.innerText = pokedataJSON.name.charAt(0).toUpperCase() + pokedataJSON.name.slice(1)
     DIALOG_IMG.src = pokedataJSON.sprites.other.dream_world.front_default
     DIALOG_IMG.alt = pokedataJSON.name
+    document.getElementById('body').classList.add('body-open')
     return [pokedataJSON, poke_abilities]
 }
 
@@ -322,6 +315,7 @@ async function onSearch() {
 function onClick(event) {
     if (event.target === dialog) {
         dialog.close();
+        document.getElementById('body').classList.remove('body-open')
     }
 }
 

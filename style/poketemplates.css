@@ -126,6 +126,10 @@
     gap: 20px;
 }
 
+.column-reverse {
+    flex-direction: column-reverse !important;
+}
+
 .loading-section span {
     font-size: 32px;
     font-family: "Jersey 25", sans-serif;

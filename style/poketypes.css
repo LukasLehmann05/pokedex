@@ -76,6 +76,58 @@
     color: white;
 }
 
+.bug {
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(158, 184, 42),
+            rgb(183, 212, 50) 18%,
+            rgb(183, 212, 50) 18%,
+            rgb(158, 184, 42) 18%);
+}
+
+.bug button {
+    color: white;
+}
+
+.psychic {
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(148, 49, 131),
+            rgb(177, 59, 157) 18%,
+            rgb(177, 59, 157) 18%,
+            rgb(148, 49, 131) 18%);
+}
+
+.psychic button {
+    color: white;
+}
+
+.fighting {
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(194, 91, 6),
+            rgb(235, 156, 54)8%,
+            rgb(235, 156, 54) 18%,
+            rgb(194, 91, 6) 18%);
+}
+
+.fighting button {
+    color: white;
+}
+
+.rock {
+    color: white;
+    background: repeating-linear-gradient(45deg,
+            rgb(63, 63, 63),
+            rgb(97, 97, 97)8%,
+            rgb(97, 97, 97) 18%,
+            rgb(63, 63, 63) 18%);
+}
+
+.rock button {
+    color: white;
+}
+
 .default {
     background: repeating-linear-gradient(45deg,
             rgb(175, 175, 175),

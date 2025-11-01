@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./style/content.css">
     <link rel="stylesheet" href="./style/poketypes.css">
     <link rel="stylesheet" href="./style/poketemplates.css">
+    <link rel="stylesheet" href="./style/responsive.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -17,29 +18,27 @@
         rel="stylesheet">
 </head>
 
-<body onload="load()">
+<body onload="load()" id="body">
     <header class="header-section">
         <div class="header-content-limit">
             <section class="header-section-logo">
                 <img class="header-img" src="./img/pikachu.png" alt="Bild von Pikachu">
                 <span>Pokédex</span>
             </section>
-            <section>
-                <input id="search_bar" class="search-bar" type="text" onchange="onSearch()" minlength="3"
-                    placeholder="search...">
-            </section>
         </div>
     </header>
     <main class="main-section">
         <section class="title-section">
-            <button onclick="loadOnRequest(5)">↪ 5</button>
             <button onclick="loadOnRequest(20)">↪ 20</button>
-            <h1 id="h1_tag">Pokémons</h1>
-            <section class="loading-section hide" id="loading_section">
-                <div class="spinner"></div><span>loading...</span>
+            <section class="title-center" id="title_center">
+                <h1 id="h1_tag">Pokémons</h1>
+                <input id="search_bar" class="search-bar" type="text" onchange="onSearch()" minlength="3"
+                    placeholder="search...">
+                <section class="loading-section hide" id="loading_section">
+                    <div class="spinner"></div><span>loading...</span>
+                </section>
             </section>
             <button onclick="loadOnRequest(100)">100 ↪</button>
-            <button onclick="loadOnRequest(200)">200 ↪</button>
         </section>
         <article id="render_section" class="render-section">
         </article>
