@@ -43,11 +43,11 @@ function returnNav(poke_dataJSON) {
             <button id="moves_button" onclick="setMovesSection(${poke_dataJSON.id})">Moves</button>`
 }
 
-function returnEvoFirst(name,image) {
+function returnEvoFirst(name, image) {
     return `<img class="evo-img" src="${image}" alt="${name}">`
 }
 
-function returnEvoOther(name,image) {
+function returnEvoOther(name, image) {
     return `<span class="evo-arrow">➤</span>
             <img class="evo-img" src="${image}" alt="${name}">`
 }
@@ -90,6 +90,10 @@ function returnMoveSection() {
     return `<section id="move_section" class="move-section"></section>`
 }
 
-function returnMoveTemplate(name,desc) {
+function returnMoveTemplate(name, desc) {
     return `<section><h3>${name}</h3><p>${desc}</p></section>`
+}
+
+function returnDialogCaption(caption, id) {
+    return `<h2 id="dialog_caption" class="dialog-h2">${caption}</h2><section class="dialog-button-section"><button onclick="dialogClickLeft(${id})">◀</button><button onclick="dialogClickRight(${id})">▶</button></section>`
 }

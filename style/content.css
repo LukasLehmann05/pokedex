@@ -46,6 +46,7 @@
     color: white;
     font-family: "Bungee", sans-serif;
     padding: 10px 5px;
+    cursor: pointer;
 }
 
 .title-section button:hover {

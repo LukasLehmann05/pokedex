@@ -1,7 +1,6 @@
 const POKE_URL = "https://pokeapi.co/api/v2/"
 const RENDER_SECTION = document.getElementById("render_section")
 const POKEMON_DIALOG = document.getElementById("pokemon_dialog")
-const DIALOG_CAPTION = document.getElementById("dialog_caption")
 const DIALOG_IMG = document.getElementById("dialog_img")
 const DIALOG_TYPES = document.getElementById("dialog_types")
 const SEARCH_BAR = document.getElementById("search_bar")
@@ -60,7 +59,7 @@ function getPokedata(pokemon_datajson) {
 }
 
 function getBackgroundColor(poketype) {
-    const TYPE_CLASSES = ["grass","fire","water","electric","poison","dark","bug","fighting","psychic","rock"]
+    const TYPE_CLASSES = ["grass", "fire", "water", "electric", "poison", "dark", "bug", "fighting", "psychic", "rock"]
     if (TYPE_CLASSES.includes(poketype)) {
         return poketype
     } else {
@@ -112,12 +111,25 @@ function getAbilities(ability) {
     return poke_abilities
 }
 
+function setDialogImage(pokeJSON) {
+    if (pokeJSON.sprites.other.dream_world.front_default) {
+        DIALOG_IMG.src = pokeJSON.sprites.other.dream_world.front_default
+        console.log("DREAM");
+    } else if (pokeJSON.sprites.other.home.front_default) {
+        DIALOG_IMG.src = pokeJSON.sprites.other.home.front_default
+        console.log("HOME");
+    } else {
+        DIALOG_IMG.src = pokeJSON.sprites.front_default
+        console.log("DEFAULT");
+    }
+}
+
 async function getDataFromAPI(poke_id) {
     let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
     let pokedataJSON = await pokedata.json()
     let poke_abilities = getAbilities(pokedataJSON.abilities)
-    DIALOG_CAPTION.innerText = pokedataJSON.name.charAt(0).toUpperCase() + pokedataJSON.name.slice(1)
-    DIALOG_IMG.src = pokedataJSON.sprites.other.dream_world.front_default
+    document.getElementById('dialog_caption_section').innerHTML = returnDialogCaption(pokedataJSON.name.charAt(0).toUpperCase() + pokedataJSON.name.slice(1), pokedataJSON.id)
+    setDialogImage(pokedataJSON)
     DIALOG_IMG.alt = pokedataJSON.name
     document.getElementById('body').classList.add('body-open')
     return [pokedataJSON, poke_abilities]
@@ -301,7 +313,7 @@ async function onSearch() {
         let allPokemons = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
         let allPokemonsjson = await allPokemons.json()
         let foundpokemons = await allPokemonsjson.results.filter(pokemon => pokemon.name.includes(input))
-        if (foundpokemons) {
+        if (foundpokemons.length > 0) {
             renderPokeSearch(foundpokemons)
         } else {
             RENDER_SECTION.innerHTML = returnNoResultFound()
@@ -311,6 +323,21 @@ async function onSearch() {
     }
 }
 
+function dialogClickLeft(id) {
+    if (id == 1) {
+        showBigPokemon(1025)
+    } else {
+        showBigPokemon(id - 1)
+    }
+}
+
+function dialogClickRight(id) {
+    if (id == 1025) {
+        showBigPokemon(1)
+    } else {
+        showBigPokemon(id + 1)
+    }
+}
 
 function onClick(event) {
     if (event.target === dialog) {
