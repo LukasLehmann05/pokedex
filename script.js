@@ -12,46 +12,79 @@ let total_loaded = 0
 let loading = false
 let search = false
 let renderedPokemons = []
+let renderedPokeData = []
 
 async function load() {
     loading = true
-    let pokedata = await fetch(POKE_URL + `pokemon?limit=${start_loading_amount}&offset=0`)
-    let pokejson = await pokedata.json()
-    let pokearray = await pokejson.results
-    await renderPokeSmall(pokearray)
-    total_loaded = start_loading_amount
+    loadingFeedback()
+    await renderPokeSmall(start_loading_amount)
     loading = false
     loadingFeedback()
 }
 
-async function loadOnRequest(amount) {
-    if (loading == false) {
-        loading = true
-        loadingFeedback()
-        let pokedata = await fetch(POKE_URL + `pokemon?limit=${amount}&offset=${total_loaded}`)
-        let pokejson = await pokedata.json()
-        let pokearray = await pokejson.results
-        await renderPokeSmall(pokearray)
-        total_loaded += amount
-        loading = false
-        loadingFeedback()
+function checkIfExists(pokemon) {
+    if (!renderedPokemons.includes(pokemon.name)) {
+        renderedPokemons.push(pokemon.name)
+        renderedPokeData.push(pokemon)
     }
-
 }
 
-async function renderPokeSmall(pokearray) {
+async function loadDataByAmount(amount) {
+    let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${amount}&offset=${total_loaded}`)
+    let poke_json = await poke_data.json()
+    let result = poke_json.results
+    let fetchedpokemons = []
+    for (let index = 0; index < result.length; index++) {
+        const POKEMON = result[index];
+        let poke_detail_data = await fetch(POKEMON.url)
+        let poke_detail_json = await poke_detail_data.json()
+        fetchedpokemons.push(poke_detail_json)
+        checkIfExists(poke_detail_json)
+    }
+    total_loaded += fetchedpokemons.length
+    return fetchedpokemons
+}
+
+async function loadDataByArray(pokemons) {
+    let poke_data = []
+    for (let index = 0; index < pokemons.length; index++) {
+        const POKEMON = pokemons[index];
+        let poke_fetch = await fetch(`https://pokeapi.co/api/v2/pokemon/${POKEMON}`)
+        let poke_fetch_json = await poke_fetch.json()
+        poke_data.push(poke_fetch_json)
+        checkIfExists(poke_fetch_json)
+    }
+    return poke_data
+}
+
+async function renderPokeSmall(amount) {
+    loading = true
     loadingFeedback()
-    renderedPokemons = []
-    for (let index = 0; index < pokearray.length; index++) {
-        const POKEMON = pokearray[index];
-        let pokemon_data = await fetch(POKEMON.url)
-        let pokemon_datajson = await pokemon_data.json()
-        renderedPokemons.push(pokemon_datajson.name)
-        let pokemon_data_array = getPokedata(pokemon_datajson)
-        let pokemon_types = getPokeTypes(pokemon_datajson.types)
-        RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
+    let pokedata = await loadDataByAmount(amount)
+    for (let index = 0; index < pokedata.length; index++) {
+        const POKEMON = pokedata[index];
+        let pokemon_data_array = getPokedata(POKEMON)
+        let pokemon_types = getPokeTypes(POKEMON.types)
+        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
         addPokeType(pokemon_data_array[0], pokemon_types)
     }
+    loading = false
+    loadingFeedback()
+}
+
+async function renderPokeSmallByData() {
+    loading = true
+    loadingFeedback()
+    let pokedata = renderedPokeData
+    for (let index = 0; index < pokedata.length; index++) {
+        const POKEMON = pokedata[index];
+        let pokemon_data_array = getPokedata(POKEMON)
+        let pokemon_types = getPokeTypes(POKEMON.types)
+        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+        addPokeType(pokemon_data_array[0], pokemon_types)
+    }
+    loading = false
+    loadingFeedback()
 }
 
 function getPokedata(pokemon_datajson) {
@@ -114,21 +147,17 @@ function getAbilities(ability) {
 function setDialogImage(pokeJSON) {
     if (pokeJSON.sprites.other.dream_world.front_default) {
         DIALOG_IMG.src = pokeJSON.sprites.other.dream_world.front_default
-        console.log("DREAM");
     } else if (pokeJSON.sprites.other.home.front_default) {
         DIALOG_IMG.src = pokeJSON.sprites.other.home.front_default
-        console.log("HOME");
     } else {
         DIALOG_IMG.src = pokeJSON.sprites.front_default
-        console.log("DEFAULT");
     }
 }
 
-async function getDataFromAPI(poke_id) {
-    let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
-    let pokedataJSON = await pokedata.json()
+async function getDataFromAPI(index) {
+    let pokedataJSON = renderedPokeData[index]
     let poke_abilities = getAbilities(pokedataJSON.abilities)
-    document.getElementById('dialog_caption_section').innerHTML = returnDialogCaption(pokedataJSON.name.charAt(0).toUpperCase() + pokedataJSON.name.slice(1), pokedataJSON.id)
+    document.getElementById('dialog_caption_section').innerHTML = returnDialogCaption(pokedataJSON.name.charAt(0).toUpperCase() + pokedataJSON.name.slice(1), renderedPokemons.indexOf(pokedataJSON.name))
     setDialogImage(pokedataJSON)
     DIALOG_IMG.alt = pokedataJSON.name
     document.getElementById('body').classList.add('body-open')
@@ -154,8 +183,8 @@ function setDialogTypes(types) {
     }
 }
 
-async function showBigPokemon(poke_id) {
-    let poke_data = await getDataFromAPI(poke_id)
+async function showBigPokemon(index) {
+    let poke_data = await getDataFromAPI(index)
     document.getElementById("dialog_main").innerHTML = returnAboutSection()
     updateAboutSection(poke_data[0], poke_data[1])
     let bg_color = getBackgroundColor(poke_data[0].types[0].type.name)
@@ -174,29 +203,28 @@ async function showBigPokemon(poke_id) {
     POKEMON_DIALOG.showModal()
 }
 
-async function setAboutSection(poke_id) {
+async function setAboutSection(index) {
     current_button.classList.remove('current')
     document.getElementById('about_button').classList.add('current')
     current_button = document.getElementById('about_button')
-    let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
-    let poke_dataJSON = await poke_data.json()
+    let poke_dataJSON = renderedPokeData[index]
     let abilities = getAbilities(poke_dataJSON.abilities)
     document.getElementById("dialog_main").innerHTML = returnAboutSection()
     updateAboutSection(poke_dataJSON, abilities)
 }
 
-async function setStatsSection(poke_id) {
-    document.getElementById("dialog_main").innerHTML = await returnStatsSection(poke_id)
+async function setStatsSection(index) {
+    document.getElementById("dialog_main").innerHTML = await returnStatsSection(renderedPokeData[index])
     current_button.classList.remove('current')
     document.getElementById('stats_button').classList.add('current')
     current_button = document.getElementById('stats_button')
 }
 
-function setEvolutionSection(poke_id) {
+function setEvolutionSection(index) {
     current_button.classList.remove('current')
     document.getElementById('evo_button').classList.add('current')
     current_button = document.getElementById('evo_button')
-    returnEvolution(poke_id)
+    returnEvolution(index)
 
 }
 
@@ -253,9 +281,8 @@ async function assignEvos(allEvos) {
     }
 }
 
-async function returnEvolution(poke_id) {
-    let pokedata = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
-    let pokejson = await pokedata.json()
+async function returnEvolution(index) {
+    let pokejson = renderedPokeData[index]
     let pokespecies = await fetch(pokejson.species.url)
     let pokespeciesjson = await pokespecies.json()
     let evo = await fetch(pokespeciesjson.evolution_chain.url)
@@ -266,42 +293,24 @@ async function returnEvolution(poke_id) {
 }
 
 async function renderPokeSearch(pokemons) {
-    loadingFeedback()
     RENDER_SECTION.innerHTML = ""
-    for (let index = 0; index < pokemons.length; index++) {
-        const POKEMON = pokemons[index];
-        let pokefetch = await fetch(POKEMON.url)
-        let pokefetchJSON = await pokefetch.json()
-        if (pokefetchJSON.id < 9999) {
-            let pokemon_data_array = getPokedata(pokefetchJSON)
-            let pokemon_types = getPokeTypes(pokefetchJSON.types)
-            RENDER_SECTION.innerHTML += createTemplateSmall(pokemon_data_array)
-            addPokeType(pokemon_data_array[0], pokemon_types)
-        }
+    let poke_data = await loadDataByArray(pokemons)
+    for (let index = 0; index < poke_data.length; index++) {
+        const POKEMON = poke_data[index];
+        let pokemon_data_array = getPokedata(POKEMON)
+        let pokemon_types = getPokeTypes(POKEMON.types)
+        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+        addPokeType(pokemon_data_array[0], pokemon_types)
     }
+    loading = false
+    loadingFeedback()
 }
 
-
-async function getPokemonFromSearch(pokemons) {
-    let fetched_pokemons = []
-    for (let index = 0; index < pokemons.length; index++) {
-        const POKEMON = pokemons[index];
-        let foundPokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${POKEMON}`)
-        let foundPokemonjson = await foundPokemon.json()
-        fetched_pokemons.push(foundPokemonjson)
-    }
-    return fetched_pokemons
-}
-
-function checkForSearchType() {
-    if (search == true) {
+function checkLoadStatus() {
+    if (search = true) {
         search = false
-        let renderAmount = total_loaded
-        total_loaded = 0
         RENDER_SECTION.innerHTML = ""
-        loadOnRequest(renderAmount)
-    } else {
-        console.log("ENTER MORE LETTERS");
+        renderPokeSmallByData()
     }
 }
 
@@ -310,32 +319,31 @@ async function onSearch() {
     let input_lenght = input.length
     if (input_lenght >= 3) {
         search = true
-        let allPokemons = await fetch('https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0')
-        let allPokemonsjson = await allPokemons.json()
-        let foundpokemons = await allPokemonsjson.results.filter(pokemon => pokemon.name.includes(input))
+        let foundpokemons = renderedPokemons.filter(pokemon => pokemon.includes(input))
         if (foundpokemons.length > 0) {
-            renderPokeSearch(foundpokemons)
+            await renderPokeSearch(foundpokemons)
         } else {
             RENDER_SECTION.innerHTML = returnNoResultFound()
+            search = false
         }
     } else {
-        checkForSearchType()
+        checkLoadStatus()
     }
 }
 
-function dialogClickLeft(id) {
-    if (id == 1) {
-        showBigPokemon(1025)
+function dialogClickLeft(index) {
+    if (index > 0) {
+        showBigPokemon(index - 1)
     } else {
-        showBigPokemon(id - 1)
+        showBigPokemon(renderedPokemons.length - 1)
     }
 }
 
-function dialogClickRight(id) {
-    if (id == 1025) {
-        showBigPokemon(1)
+function dialogClickRight(index) {
+    if (index + 1 >= renderedPokemons.length) {
+        showBigPokemon(0)
     } else {
-        showBigPokemon(id + 1)
+        showBigPokemon(index + 1)
     }
 }
 

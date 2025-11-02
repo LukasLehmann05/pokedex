@@ -1,10 +1,10 @@
-function createTemplateSmall(pokemon, poketype) {
-    let pokename = pokemon[0].charAt(0).toUpperCase() + pokemon[0].slice(1)
-    return `<button id="${pokemon[0] + '_section'}" class="pokemon-small card" onclick="showBigPokemon(${pokemon[2]})" title="${pokemon[0]}">
+function createTemplateSmall(index,name,image) {
+    let pokename = name.charAt(0).toUpperCase() + name.slice(1)
+    return `<button id="${name + '_section'}" class="pokemon-small card" onclick="showBigPokemon(${index})" title="${name}">
                 <section class="pokemon-small-section">
                     <h2>${pokename}</h2>
-                    <img class="pokemon-img-small" src="${pokemon[1]}" alt="${pokemon[0]}">
-                    <aside class="type-section" id="${pokemon[0]}"></aside>
+                    <img class="pokemon-img-small" src="${image}" alt="${name}">
+                    <aside class="type-section" id="${name}"></aside>
                 </section>
             </button>`
 }
@@ -57,27 +57,25 @@ function returnEvoSection() {
 }
 
 
-async function returnStatsSection(poke_id) {
-    let poke_data = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke_id}`)
-    let poke_dataJSON = await poke_data.json()
+async function returnStatsSection(poke_data) {
     return `<section class="stats-section">
                 <section class="label-section"> <label for="hp">Health</label>
-                    <progress id="hp" value="${poke_dataJSON.stats[0].base_stat}" max="100"></progress>
+                    <progress id="hp" value="${poke_data.stats[0].base_stat}" max="100"></progress>
                 </section>
                 <section class="label-section"> <label for="attack">Attack</label>
-                    <progress id="hp" value="${poke_dataJSON.stats[1].base_stat}" max="100"></progress>
+                    <progress id="hp" value="${poke_data.stats[1].base_stat}" max="100"></progress>
                 </section>
                 <section class="label-section"> <label for="defense">Defense</label>
-                    <progress id="hp" value="${poke_dataJSON.stats[2].base_stat}" max="100"></progress>
+                    <progress id="hp" value="${poke_data.stats[2].base_stat}" max="100"></progress>
                 </section>
                 <section class="label-section"> <label for="special-attack">Special attack</label>
-                    <progress id="special-attack" value="${poke_dataJSON.stats[3].base_stat}" max="130"></progress>
+                    <progress id="special-attack" value="${poke_data.stats[3].base_stat}" max="130"></progress>
                 </section>
                 <section class="label-section"> <label for="special-defense">Special defense</label>
-                    <progress id="special-defense" value="${poke_dataJSON.stats[4].base_stat}" max="130"></progress>
+                    <progress id="special-defense" value="${poke_data.stats[4].base_stat}" max="130"></progress>
                 </section>
                 <section class="label-section"> <label for="speed">Speed</label>
-                    <progress id="speed" value="${poke_dataJSON.stats[5].base_stat}" max="100"></progress>
+                    <progress id="speed" value="${poke_data.stats[5].base_stat}" max="100"></progress>
                 </section>
             </section>`
 }
@@ -94,6 +92,6 @@ function returnMoveTemplate(name, desc) {
     return `<section><h3>${name}</h3><p>${desc}</p></section>`
 }
 
-function returnDialogCaption(caption, id) {
-    return `<h2 id="dialog_caption" class="dialog-h2">${caption}</h2><section class="dialog-button-section"><button onclick="dialogClickLeft(${id})">◀</button><button onclick="dialogClickRight(${id})">▶</button></section>`
+function returnDialogCaption(caption, index) {
+    return `<h2 id="dialog_caption" class="dialog-h2">${caption}</h2><section class="dialog-button-section"><button onclick="dialogClickLeft(${index})">◀</button><button onclick="dialogClickRight(${index})">▶</button></section>`
 }

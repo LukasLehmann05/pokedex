@@ -29,16 +29,16 @@
     </header>
     <main class="main-section">
         <section class="title-section">
-            <button onclick="loadOnRequest(20)">↪ 20</button>
+            <button onclick="renderPokeSmall(20)">↪ 20</button>
             <section class="title-center" id="title_center">
                 <h1 id="h1_tag">Pokémons</h1>
-                <input id="search_bar" class="search-bar" type="text" onchange="onSearch()" minlength="3"
+                <input id="search_bar" class="search-bar" type="text" onkeyup="onSearch()" minlength="3"
                     placeholder="search...">
                 <section class="loading-section hide" id="loading_section">
                     <div class="spinner"></div><span>loading...</span>
                 </section>
             </section>
-            <button onclick="loadOnRequest(100)">100 ↪</button>
+            <button onclick="renderPokeSmall(100)">100 ↪</button>
         </section>
         <article id="render_section" class="render-section">
         </article>
