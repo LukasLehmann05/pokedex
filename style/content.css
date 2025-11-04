@@ -128,3 +128,8 @@ footer span {
     background-color: rgb(64, 53, 95);
     color: white;
 }
+
+.button-load {
+    border-color: rgb(255, 0, 0) !important;
+    color: rgb(255, 0, 0) !important;
+}

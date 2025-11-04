@@ -15,10 +15,8 @@ let renderedPokemons = []
 let renderedPokeData = []
 
 async function load() {
-    loading = true
     loadingFeedback()
     await renderPokeSmall(start_loading_amount)
-    loading = false
     loadingFeedback()
 }
 
@@ -58,33 +56,37 @@ async function loadDataByArray(pokemons) {
 }
 
 async function renderPokeSmall(amount) {
-    loading = true
-    loadingFeedback()
-    let pokedata = await loadDataByAmount(amount)
-    for (let index = 0; index < pokedata.length; index++) {
-        const POKEMON = pokedata[index];
-        let pokemon_data_array = getPokedata(POKEMON)
-        let pokemon_types = getPokeTypes(POKEMON.types)
-        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
-        addPokeType(pokemon_data_array[0], pokemon_types)
+    if (loading == false) {
+        loading = true
+        loadingFeedback()
+        let pokedata = await loadDataByAmount(amount)
+        for (let index = 0; index < pokedata.length; index++) {
+            const POKEMON = pokedata[index];
+            let pokemon_data_array = getPokedata(POKEMON)
+            let pokemon_types = getPokeTypes(POKEMON.types)
+            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+            addPokeType(pokemon_data_array[0], pokemon_types)
+        }
+        loading = false
+        loadingFeedback()
     }
-    loading = false
-    loadingFeedback()
 }
 
 async function renderPokeSmallByData() {
-    loading = true
-    loadingFeedback()
-    let pokedata = renderedPokeData
-    for (let index = 0; index < pokedata.length; index++) {
-        const POKEMON = pokedata[index];
-        let pokemon_data_array = getPokedata(POKEMON)
-        let pokemon_types = getPokeTypes(POKEMON.types)
-        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
-        addPokeType(pokemon_data_array[0], pokemon_types)
+    if (loading == false) {
+        loading = true
+        loadingFeedback()
+        let pokedata = renderedPokeData
+        for (let index = 0; index < pokedata.length; index++) {
+            const POKEMON = pokedata[index];
+            let pokemon_data_array = getPokedata(POKEMON)
+            let pokemon_types = getPokeTypes(POKEMON.types)
+            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+            addPokeType(pokemon_data_array[0], pokemon_types)
+        }
+        loading = false
+        loadingFeedback()
     }
-    loading = false
-    loadingFeedback()
 }
 
 function getPokedata(pokemon_datajson) {
@@ -105,10 +107,14 @@ function loadingFeedback() {
         document.getElementById('h1_tag').classList.remove('hide')
         document.getElementById('loading_section').classList.add('hide')
         document.getElementById('title_center').classList.add('column-reverse')
+        document.getElementById('render_button_left').classList.remove('button-load')
+        document.getElementById('render_button_right').classList.remove('button-load')
     } else {
         document.getElementById('h1_tag').classList.add('hide')
         document.getElementById('loading_section').classList.remove('hide')
         document.getElementById('title_center').classList.remove('column-reverse')
+        document.getElementById('render_button_left').classList.add('button-load')
+        document.getElementById('render_button_right').classList.add('button-load')
     }
 }
 
@@ -183,17 +189,21 @@ function setDialogTypes(types) {
     }
 }
 
-async function showBigPokemon(index) {
-    let poke_data = await getDataFromAPI(index)
-    document.getElementById("dialog_main").innerHTML = returnAboutSection()
-    updateAboutSection(poke_data[0], poke_data[1])
+function changeDialogClass(poke_data) {
     let bg_color = getBackgroundColor(poke_data[0].types[0].type.name)
     if (current_class !== "") {
         POKEMON_DIALOG.classList.remove(current_class)
     }
     POKEMON_DIALOG.classList.add(bg_color)
-    setDialogTypes(getPokeTypes(poke_data[0].types))
     current_class = bg_color
+}
+
+async function showBigPokemon(index) {
+    let poke_data = await getDataFromAPI(index)
+    document.getElementById("dialog_main").innerHTML = returnAboutSection()
+    updateAboutSection(poke_data[0], poke_data[1])
+    setDialogTypes(getPokeTypes(poke_data[0].types))
+    changeDialogClass(poke_data)
     document.getElementById("dialog_nav").innerHTML = returnNav(poke_data[0])
     if (current_button != "") {
         current_button.classList.remove('current')
@@ -292,7 +302,14 @@ async function returnEvolution(index) {
 
 }
 
-async function renderPokeSearch(pokemons) {
+function checkDataAmount(amount) {
+    if (amount > 50) {
+        renderedPokemons.splice(75, amount - 75)
+        renderedPokeData.splice(75, amount - 75)
+    }
+}
+
+async function renderPokeSearch(pokemons) { 
     RENDER_SECTION.innerHTML = ""
     let poke_data = await loadDataByArray(pokemons)
     for (let index = 0; index < poke_data.length; index++) {
@@ -310,6 +327,7 @@ function checkLoadStatus() {
     if (search = true) {
         search = false
         RENDER_SECTION.innerHTML = ""
+        checkDataAmount(renderedPokemons.length)
         renderPokeSmallByData()
     }
 }

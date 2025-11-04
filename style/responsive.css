@@ -17,4 +17,8 @@
     .dialog-nav button {
         padding: 0px 2px;
     }
+
+    .evo-arrow {
+        font-size: 20px;
+    }
 }
