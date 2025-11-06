@@ -1,8 +1,7 @@
-function createTemplateSmall(index,name,image) {
-    let pokename = name.charAt(0).toUpperCase() + name.slice(1)
+function createTemplateSmall(index,nameBig,image,name) {
     return `<button id="${name + '_section'}" class="pokemon-small card" onclick="showBigPokemon(${index})" title="${name}">
                 <section class="pokemon-small-section">
-                    <h2>${pokename}</h2>
+                    <h2>${nameBig}</h2>
                     <img class="pokemon-img-small" src="${image}" alt="${name}">
                     <aside class="type-section" id="${name}"></aside>
                 </section>

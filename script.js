@@ -11,6 +11,7 @@ let current_button = ""
 let total_loaded = 0
 let loading = false
 let search = false
+let notfound = false
 let renderedPokemons = []
 let renderedPokeData = []
 
@@ -20,7 +21,7 @@ async function load() {
     loadingFeedback()
 }
 
-function checkIfExists(pokemon) {
+async function checkIfExists(pokemon) {
     if (!renderedPokemons.includes(pokemon.name)) {
         renderedPokemons.push(pokemon.name)
         renderedPokeData.push(pokemon)
@@ -43,12 +44,19 @@ async function loadDataByAmount(amount) {
     return fetchedpokemons
 }
 
+function clearRenderSection() {
+    if (notfound == true) {
+        RENDER_SECTION.innerHTML = ""
+        notfound = false
+    }
+}
+
 async function loadDataByArray(pokemons) {
     let poke_data = []
     for (let index = 0; index < pokemons.length; index++) {
         const POKEMON = pokemons[index];
-        let poke_fetch = await fetch(`https://pokeapi.co/api/v2/pokemon/${POKEMON}`)
-        let poke_fetch_json = await poke_fetch.json()
+        let pokearrayIndex = renderedPokemons.indexOf(POKEMON)
+        let poke_fetch_json = renderedPokeData[pokearrayIndex]
         poke_data.push(poke_fetch_json)
         checkIfExists(poke_fetch_json)
     }
@@ -59,12 +67,14 @@ async function renderPokeSmall(amount) {
     if (loading == false) {
         loading = true
         loadingFeedback()
+        clearRenderSection()
         let pokedata = await loadDataByAmount(amount)
         for (let index = 0; index < pokedata.length; index++) {
             const POKEMON = pokedata[index];
             let pokemon_data_array = getPokedata(POKEMON)
             let pokemon_types = getPokeTypes(POKEMON.types)
-            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+            let pokemon_name
+            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name.charAt(0).toUpperCase() + POKEMON.name.slice(1), POKEMON.sprites.front_default, POKEMON.name)
             addPokeType(pokemon_data_array[0], pokemon_types)
         }
         loading = false
@@ -76,12 +86,13 @@ async function renderPokeSmallByData() {
     if (loading == false) {
         loading = true
         loadingFeedback()
+        clearRenderSection()
         let pokedata = renderedPokeData
         for (let index = 0; index < pokedata.length; index++) {
             const POKEMON = pokedata[index];
             let pokemon_data_array = getPokedata(POKEMON)
             let pokemon_types = getPokeTypes(POKEMON.types)
-            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+            RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name.charAt(0).toUpperCase() + POKEMON.name.slice(1), POKEMON.sprites.front_default, POKEMON.name)
             addPokeType(pokemon_data_array[0], pokemon_types)
         }
         loading = false
@@ -292,7 +303,7 @@ async function assignEvos(allEvos) {
 }
 
 async function returnEvolution(index) {
-    let pokejson = renderedPokeData[index]
+    let pokejson = renderedPokeData[index - 1];
     let pokespecies = await fetch(pokejson.species.url)
     let pokespeciesjson = await pokespecies.json()
     let evo = await fetch(pokespeciesjson.evolution_chain.url)
@@ -309,22 +320,22 @@ function checkDataAmount(amount) {
     }
 }
 
-async function renderPokeSearch(pokemons) { 
+async function renderPokeSearch(pokemons) {
     RENDER_SECTION.innerHTML = ""
     let poke_data = await loadDataByArray(pokemons)
     for (let index = 0; index < poke_data.length; index++) {
         const POKEMON = poke_data[index];
         let pokemon_data_array = getPokedata(POKEMON)
         let pokemon_types = getPokeTypes(POKEMON.types)
-        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name, POKEMON.sprites.front_default)
+        RENDER_SECTION.innerHTML += createTemplateSmall(renderedPokemons.indexOf(POKEMON.name), POKEMON.name.charAt(0).toUpperCase() + POKEMON.name.slice(1), POKEMON.sprites.front_default, POKEMON.name)
         addPokeType(pokemon_data_array[0], pokemon_types)
     }
     loading = false
     loadingFeedback()
 }
 
-function checkLoadStatus() {
-    if (search = true) {
+function checkLoadStatus(input) {
+    if (search = true && input == "") {
         search = false
         RENDER_SECTION.innerHTML = ""
         checkDataAmount(renderedPokemons.length)
@@ -343,9 +354,10 @@ async function onSearch() {
         } else {
             RENDER_SECTION.innerHTML = returnNoResultFound()
             search = false
+            notfound = true
         }
     } else {
-        checkLoadStatus()
+        checkLoadStatus(input)
     }
 }
 
